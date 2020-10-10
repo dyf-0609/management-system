@@ -9,7 +9,7 @@
       </a-layout-sider>
       <a-layout style="padding: 0 24px 24px">
         <a-layout-content
-          :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
+          :style="{ background: '#fff', padding: '24px', margin: 0, flex:'none','min-height':'800px'}"
         >
           <router-view/>
         </a-layout-content>
@@ -53,7 +53,9 @@ export default {
 }
 #components-layout-demo-top-side-2{
     height: 100%;
+    min-width: 1300px;
 }
+
 
 </style>
 

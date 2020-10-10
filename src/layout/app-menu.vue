@@ -1,70 +1,87 @@
 <template>
-<a-menu
-          mode="inline"
-          :default-selected-keys="['1']"
-          :default-open-keys="['sub1']"
-          :style="{ height: '100%', borderRight: 0 }"
-        >
-          <a-sub-menu key="sub1">
-            <span slot="title"><a-icon type="user" />subnav 1</span>
-            <a-menu-item key="1">
-              option1
-            </a-menu-item>
-            <a-menu-item key="2">
-              option2
-            </a-menu-item>
-            <a-menu-item key="3">
-              option3
-            </a-menu-item>
-            <a-menu-item key="4">
-              option4
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub2">
-            <span slot="title"><a-icon type="laptop" />subnav 2</span>
-            <a-menu-item key="5">
-              option5
-            </a-menu-item>
-            <a-menu-item key="6">
-              option6
-            </a-menu-item>
-            <a-menu-item key="7">
-              option7
-            </a-menu-item>
-            <a-menu-item key="8">
-              option8
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="sub3">
-            <span slot="title"><a-icon type="notification" />subnav 3</span>
-            <a-menu-item key="9">
-              option9
-            </a-menu-item>
-            <a-menu-item key="10">
-              option10
-            </a-menu-item>
-            <a-menu-item key="11">
-              option11
-            </a-menu-item>
-            <a-menu-item key="12">
-              option12
-            </a-menu-item>
-          </a-sub-menu>
-        </a-menu>
+<a-menu mode="inline" 
+        :style="{ height: '100%', borderRight: 0 }"
+         @click="changeRouteAction"
+         :defaultSelectedKeys="[selectKey]"
+         :defaultOpenKeys="openKeys"
+>
+  <template v-for="item in menuData">
+    <!-- 二级目录 -->
+    <a-sub-menu class="item-bg" v-if="item.children&&item.children.length>0" :key="item.name">
+      <span slot="title">
+        <img :src="item.meta.img" alt="">
+        <span>{{item.meta.title}}</span>
+      </span>
+      <a-menu-item v-for="subItem in item.children" :key="subItem.name">
+        <span>{{subItem.meta.title}}</span>
+      </a-menu-item>
+    </a-sub-menu>
+    <!-- 一级目录 -->
+    <a-menu-item class="item-bg" v-else :key="item.name">
+      <img :src="item.meta.img" alt="">
+      <span>{{item.meta.title}}</span>
+    </a-menu-item>
+  </template>
+  </a-menu>
 </template>
 
 <script>
 import {Menu,Icon} from 'ant-design-vue'
+import mainRoute from '../router/mainRoute'
 export default {
     components:{
         [Menu.name]:Menu,
         [Menu.Item.name]:Menu.Item,
         [Menu.SubMenu.name]:Menu.SubMenu,
         [Icon.name]:Icon,
+        mainRoute
+    },
+    data(){
+      return{
+        menuData:mainRoute.children,
+        selectKey:this.$route.name
+      }
+    },
+    computed:{
+      openKeys(){
+        const index=this.$route.matched.findIndex(item=>item.name===this.$route.name);
+        if(index===1){
+          //一级目录
+          return [];
+        }else{
+          //二级目录
+          return [this.$route.matched[1].name];
+        }
+      }
+    },
+    methods:{
+      changeRouteAction({key}){
+        this.$router.push({name:key});
+      }
+    },
+    created(){
+      console.log(this.$route);
+      console.log(this.openKeys);
     }
 }
 </script>
 
+<style lang="scss" scoped>
+.ant-menu-item{
+  border-bottom: 1px solid #ddd;
+}
+img{
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  margin-top: -3px;
+}
+.item-bg{
+  background-color: #F2F2F2;
+}
+</style>
 <style>
-
+.ant-menu-submenu-title{
+  border-bottom: 1px solid #ddd;
+}
 </style>
