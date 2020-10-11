@@ -7,14 +7,16 @@
 >
   <template v-for="item in menuData">
     <!-- 二级目录 -->
-    <a-sub-menu class="item-bg" v-if="item.children&&item.children.length>0" :key="item.name">
+    <a-sub-menu class="item-bg" v-if="item.children&&item.children.length>0"  :key="item.name">
       <span slot="title">
         <img :src="item.meta.img" alt="">
         <span>{{item.meta.title}}</span>
       </span>
-      <a-menu-item v-for="subItem in item.children" :key="subItem.name">
+      <template v-for="subItem in item.children">
+      <a-menu-item v-if="subItem.meta.show!==false" :key="subItem.name" >
         <span>{{subItem.meta.title}}</span>
       </a-menu-item>
+      </template>
     </a-sub-menu>
     <!-- 一级目录 -->
     <a-menu-item class="item-bg" v-else :key="item.name">

@@ -32,7 +32,7 @@ export default{
             component:()=>import('../views/course/CourseList'),
             meta:{ 
               title:'课程列表',
-            }
+            },
           },
           //课程消耗
           {
@@ -43,6 +43,24 @@ export default{
               title:'课程消耗',
             }
           },
+          {
+            path:'add-course',
+            name:'add-course',
+            component:()=>import('../views/course/AddCourse'),
+            meta:{ 
+              title:'新增课程',
+              show:false
+            }
+          },
+          {
+            path:'edit-course',
+            name:'edit-course',
+            component:()=>import('../views/course/EditCourse'),
+            meta:{ 
+              title:'编辑课程',
+              show:false
+            }
+          }
         ]
       },
       //班级管理

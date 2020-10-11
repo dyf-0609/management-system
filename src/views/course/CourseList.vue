@@ -9,27 +9,31 @@
         <div class="content">
           <p class="select">
             <label for="">校区：</label>
-            <select name="" id="">
-              <option value="">请选择校区</option>
-              <option value="" v-for="item in school" :key="item.name">{{item.name}}</option>
-            </select>
+             <a-select :size="size" default-value="请选择校区" style="width: 165px" @change="handleChange">
+                <a-select-option v-for="item in school" :key="item.name">
+                    {{ item.name }}
+                </a-select-option>
+            </a-select>
             <label for="">年级：</label>
-            <select name="" id="">
-              <option value="">请选择年级</option>
-              <option value="" v-for="item in grade" :key="item.name">{{item.name}}</option>
-            </select>
+             <a-select :size="size" default-value="请选择年级" style="width: 165px" @change="handleChange">
+                <a-select-option v-for="item in grade" :key="item.name">
+                    {{ item.name }}
+                </a-select-option>
+            </a-select>
             <label for="">学科：</label>
-            <select name="" id="">
-              <option value="">请选择学科</option>
-              <option value="" v-for="item in subject" :key="item.name">{{item.name}}</option>
-            </select>
+            <a-select :size="size" default-value="请选择学科" style="width: 165px" @change="handleChange">
+                <a-select-option v-for="item in subject" :key="item.name">
+                    {{ item.name }}
+                </a-select-option>
+            </a-select>
             <label for="">学期：</label>
-            <select name="" id="">
-              <option value="">请选择学期</option>
-              <option value="" v-for="item in semester" :key="item.name">{{item.name}}</option>
-            </select>
+            <a-select :size="size" default-value="请选择学期" style="width: 165px" @change="handleChange">
+                <a-select-option v-for="item in semester" :key="item.name">
+                    {{ item.name }}
+                </a-select-option>
+            </a-select>
           </p>
-          <input type="text" placeholder="输入标题或关键字">
+          <a-input placeholder="输入标题或关键字" />
           <label for="" style="margin-right:20px">上传时间：</label>
            <a-date-picker
               v-model="startValue"
@@ -57,7 +61,8 @@
               <img src="/image/list.svg" alt="">
               <span>课程列表</span>
           </div>
-          <a-button type="primary">新增课程</a-button>
+          <a-button type="primary" @click="AddCourseAction">新增课程</a-button>
+          <a-button type="primary" @click="EditCourseAction">编辑</a-button>
         </div>
         <div class="content">
           <a-table :columns="columns" :data-source="data" bordered :pagination="false">
@@ -67,7 +72,7 @@
           </a-table>
           <a-pagination
             :total="85"
-            :show-total="total => `共 ${page-size} /${total} 条数据`"
+            :show-total="total => `共 ${total} 条数据`"
             :page-size="20"
             :default-current="1"
           />
@@ -77,7 +82,7 @@
 </template>
 
 <script>
-import {DatePicker,Input,Button,Table,Pagination  } from "ant-design-vue";
+import {DatePicker,Input,Button,Table,Pagination,Select  } from "ant-design-vue";
 import moment from 'moment';
 const columns = [
   {title: '选择'},
@@ -121,7 +126,9 @@ export default {
     [Input.name]:Input,
     [Button.name]:Button ,
     [Table .name]:Table ,
-    [Pagination.name]:Pagination
+    [Pagination.name]:Pagination,
+    [Select.name]:Select,
+    [Select.Option.name]:Select.Option,
   },
   data(){
     return{
@@ -142,6 +149,7 @@ export default {
       endOpen: false,
       data,
       columns,
+      size: 'default',
     }
   },
   watch: {
@@ -175,6 +183,18 @@ export default {
     handleEndOpenChange(open) {
       this.endOpen = open;
     },
+    AddCourseAction(){
+      this.$router.push('add-course')
+    },
+     handleChange(value) {
+      console.log(`Selected: ${value}`);
+    },
+    popupScroll() {
+      console.log('popupScroll');
+    },
+    EditCourseAction(){
+      this.$router.push('edit-course')
+    }
   },
 }
 </script>
@@ -214,21 +234,11 @@ h1{
     color: #333;
     .select{
       padding-top: 10px;
-      select{
-        margin-right: 20px;
-        width: 165px;
-        height: 36px;
-        border: none;
-        padding: 5px 10px;
-        background-color: #f2f2f2;
-      }
     }
     input{
       width: 183px;
       height: 25px;
       padding: 1px;
-      border: none;
-      border: 1px solid #666;
       color: rgb(153, 153, 153);
       font-size:13px;
       margin-right: 50px;
@@ -250,14 +260,15 @@ h1{
 
 </style>
 <style lang="scss">
-.ant-calendar-picker-input.ant-input{
-  border: 1px solid #666;
-}
+
 .ant-btn-primary{
   margin-left: 60px;
 }
 .ant-pagination{
   text-align: right;
   margin-top: 20px;
+}
+.ant-select {
+margin-right: 10px;
 }
 </style>
