@@ -8,7 +8,8 @@ Vue.use(VueRouter)
 
 const routes = [
   auth,
-  main
+  main,
+ 
 ]
 
 const router = new VueRouter({

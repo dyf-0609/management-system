@@ -53,7 +53,7 @@ export default {
 }
 #components-layout-demo-top-side-2{
     height: 100%;
-    min-width: 1300px;
+    min-width: 1350px;
 }
 
 

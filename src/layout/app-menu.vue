@@ -62,8 +62,8 @@ export default {
       }
     },
     created(){
-      console.log(this.$route);
-      console.log(this.openKeys);
+      // console.log(this.$route);
+      // console.log(this.openKeys);
     }
 }
 </script>

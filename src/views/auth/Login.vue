@@ -1,10 +1,10 @@
 <template>
     <div class="login">
         <p>
-            <input type="text" placeholder="请输入用户名" v-model="username">
+            <input type="text" placeholder="请输入用户名  dd" v-model="username">
         </p>
         <p>
-            <input type="password" placeholder="请输入密码" v-model="password"> 
+            <input type="password" placeholder="请输入密码  1" v-model="password"> 
         </p>
         <p>
             <button @click="loginAction">登录</button>
@@ -61,6 +61,7 @@ export default {
         }
         button{
             width: 260px;
+            line-height: 40px;
             height: 40px;
             background-color: rgba(16, 142, 233, 1);
             border-radius: 8px;

@@ -7,29 +7,11 @@
     <div class="content">
       <p>
         <label for="">课程编号<sup>*</sup></label>
-        <a-input placeholder="请输入..." />
+        <a-input placeholder="请输入..."  v-model="formData.course_id"/>
       </p>
       <p>
         <label for="">课程名称<sup>*</sup></label>
-        <a-input placeholder="请输入..." />
-      </p>
-      <p>
-        <label for="">列表图</label>
-        <a-upload
-          name="avatar"
-          list-type="picture-card"
-          class="avatar-uploader"
-          :show-upload-list="false"
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          :before-upload="beforeUpload"
-          @change="handleChange"
-        >
-          <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-          <div v-else>
-            <a-icon :type="loading ? 'loading' : 'plus'" />
-          </div>
-        </a-upload>
-        <span class="tip" style="display:block; margin-left:120px">建议尺寸120*90像素，大小不要超过1M</span>
+        <a-input placeholder="请输入..."  v-model="formData.course_name"/>
       </p>
       <p>
         <label for="">校区<sup>*</sup></label>
@@ -49,7 +31,7 @@
           :size="size"
           default-value="请选择年级"
           style="width: 200px"
-          @change="handleChange"
+          @change="gradeChange"
         >
           <a-select-option v-for="item in grade" :key="item.name">
             {{ item.name }}
@@ -62,7 +44,7 @@
           :size="size"
           default-value="请选择学期"
           style="width: 200px"
-          @change="handleChange"
+          @change="semesterChange"
         >
           <a-select-option v-for="item in semester" :key="item.name">
             {{ item.name }}
@@ -71,11 +53,11 @@
       </p>
       <p>
         <label for="">价格<sup>*</sup></label>
-        <a-input placeholder="0.00" style="width:200px"/> 元
+        <a-input placeholder="0.00" style="width:200px" v-model="formData.price"/> 元
       </p>
       <p>
         <label for="">名额<sup>*</sup></label>
-        <a-input placeholder="0" style="width:200px" /> 人
+        <a-input placeholder="0" style="width:200px" v-model="formData.quota"/> 人
       </p>
       <p>
         <label for="">学科<sup>*</sup></label>
@@ -83,7 +65,7 @@
           :size="size"
           default-value="请选择学科"
           style="width: 200px"
-          @change="handleChange"
+          @change="subjectChange"
         >
           <a-select-option v-for="item in subject" :key="item.name">
             {{ item.name }}
@@ -95,22 +77,17 @@
         <a-switch
           checked-children="ON"
           un-checked-children="OFF"
-          default-checked
+          
+          @change="saleChange" 
         />
       </p>
       <p>
-        <label for="">是否推荐到首页<sup>*</sup></label>
-        <a-radio-group name="radioGroup">
-          <a-radio :value="1"> 是 </a-radio>
-          <a-radio :value="2"> 否 </a-radio>
-        </a-radio-group>
-      </p>
-      <p>
         <label for="">是否立即开课<sup>*</sup></label>
-        <a-radio-group name="radioGroup">
-          <a-radio :value="1"> 是 </a-radio>
-          <a-radio :value="2"> 否 </a-radio>
-        </a-radio-group>
+       <a-radio-group
+          :options="plainOptions1"
+          :default-value="value1"
+          @change="onChange1"
+        />
       </p>
       <p>
         <label for="">课程日期<sup>*</sup></label>
@@ -137,91 +114,32 @@
       </p>
       <p>
         <label for="">课时<sup>*</sup></label>
-        <a-input placeholder="0"  style="width: 200px"/>
+        <a-input placeholder="0"  style="width: 200px" v-model="formData.class_hour"/>
       </p>
       <p>
         <label for="">课程介绍<sup>*</sup></label>
-        <a-textarea :rows="4" />
+        <a-textarea :rows="4" v-model="formData.course_intro"/>
       </p>
       <p>
-        <label for="">课程大纲<sup>*</sup></label>
-        <a-form-model
-          ref="dynamicValidateForm"
-          :model="dynamicValidateForm"
-          v-bind="formItemLayoutWithOutLabel"
-        >
-          <a-form-model-item
-            v-for="(domain, index) in dynamicValidateForm.domains"
-            :key="domain.key"
-            v-bind="index === 0 ? formItemLayout : {}"
-            :label="index === 0 ? '第'+(index+1)+'讲' : ''"
-            :prop="'domains.' + index + '.value'"
-            :rules="{
-              required: true,
-              message: '输入不能为空',
-              trigger: 'blur',
-            }"
-          >
-            <a-input
-              v-model="domain.value"
-              style="width: 60%; margin-right: 8px"
-            />
-            <a-icon
-              v-if="dynamicValidateForm.domains.length > 1"
-              class="dynamic-delete-button"
-              type="minus-circle-o"
-              :disabled="dynamicValidateForm.domains.length === 1"
-              @click="removeDomain(domain)"
-            />
-          </a-form-model-item>
-          <a-form-model-item v-bind="formItemLayoutWithOutLabel">
-            <a-button type="solid" style="width: 16px; border-radius:50%; " @click="addDomain">
-              <a-icon type="plus" style="margin-left:-6px"/> 
-            </a-button>
-          </a-form-model-item>
-          <a-form-model-item v-bind="formItemLayoutWithOutLabel">
-            <a-button
-              type="primary"
-              html-type="submit"
-              @click="submitForm('dynamicValidateForm')"
-            >
-              提交
-            </a-button>
-            <a-button
-              style="margin-left: 50px"
-              @click="resetForm('dynamicValidateForm')"
-            >
-              取消
-            </a-button>
-          </a-form-model-item>
-        </a-form-model>
+        <a-button type="primary" @click="submitAction">提交</a-button>
+        <a-button type="primary" @click="goBackAction">取消</a-button>
       </p>
     </div>
   </div>
 </template>
 
 <script>
+import http from '../../api/http'
+import {ADDCOURSE_API} from '../../api/url'
 import {
-  Button,
-  Input,
-  Upload,
-  Icon,
-  Checkbox,
-  Row,
-  Col,
-  Switch,
-  Radio,
-  DatePicker,
-  Select,
-  Form,
-  FormModel
+  Button,Input,Upload,Icon,Checkbox,Row,Col,Switch,Radio,DatePicker,Select,Form,FormModel
 } from "ant-design-vue";
 function getBase64(img, callback) {
   const reader = new FileReader();
   reader.addEventListener("load", () => callback(reader.result));
   reader.readAsDataURL(img);
 }
-console.log(Form);
+const plainOptions1 = ["否", "是"];
 export default {
   components: {
     [Button.name]: Button,
@@ -245,6 +163,11 @@ export default {
   },
   data() {
     return {
+      plainOptions1,
+      value1:'否',
+      formData:{
+        course_id:'',course_name:'',school:[],grade:'',semester:'',price:'',quota:'',subject:'',isSale:false,isOpen:false,course_date:{},class_hour:'',course_intro:''
+      },
       loading: false,
       imageUrl: "",
       school: [
@@ -310,43 +233,42 @@ export default {
   },
   watch: {
     startValue(val) {
-      console.log("startValue", val);
+      if(!val){
+        return
+      }else{
+        // console.log(val._d.getFullYear()+'-'+(val._d.getMonth()+1)+'-'+val._d.getDate());
+        const start=val._d.getFullYear()+'-'+(val._d.getMonth()+1)+'-'+val._d.getDate();
+        this.formData.course_date.start=start;
+      } 
     },
     endValue(val) {
-      console.log("endValue", val);
+      if(!val){
+        return
+      }else{
+        console.log(val._d.getFullYear()+'-'+(val._d.getMonth()+1)+'-'+val._d.getDate());
+        const end=val._d.getFullYear()+'-'+(val._d.getMonth()+1)+'-'+val._d.getDate();
+        this.formData.course_date.end=end;
+      }
     },
   },
   methods: {
+    saleChange(checked) {
+      // console.log(`a-switch to ${checked}`);
+      this.formData.isSale=`${checked}`
+    },
+    onChange1(e){
+      // console.log(e.target.value);
+      if (e.target.value === "是") {
+        this.formData.isOpen = true;
+        
+      }
+    },
     goBackAction() {
       this.$router.back();
     },
-    handleChange(info) {
-      if (info.file.status === "uploading") {
-        this.loading = true;
-        return;
-      }
-      if (info.file.status === "done") {
-        // Get this url from response in real world.
-        getBase64(info.file.originFileObj, (imageUrl) => {
-          this.imageUrl = imageUrl;
-          this.loading = false;
-        });
-      }
-    },
-    beforeUpload(file) {
-      const isJpgOrPng =
-        file.type === "image/jpeg" || file.type === "image/png";
-      if (!isJpgOrPng) {
-        this.$message.error("You can only upload JPG file!");
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("Image must smaller than 2MB!");
-      }
-      return isJpgOrPng && isLt2M;
-    },
     onChange(checkedValues) {
-      console.log("checked = ", checkedValues);
+      this.formData.school=checkedValues;
+      // console.log("checked = ", checkedValues);
     },
     disabledStartDate(startValue) {
       const endValue = this.endValue;
@@ -370,11 +292,20 @@ export default {
     handleEndOpenChange(open) {
       this.endOpen = open;
     },
-    handleChange(value) {
-      console.log(`Selected: ${value}`);
+    gradeChange(value) {
+      this.formData.grade=`${value}`
+      // console.log(`Selected: ${value}`);
+    },
+    semesterChange(value) {
+      this.formData.semester=`${value}`
+      // console.log(`Selected: ${value}`);
+    },
+    subjectChange(value) {
+      this.formData.subject=`${value}`
+      // console.log(`Selected: ${value}`);
     },
     popupScroll() {
-      console.log("popupScroll");
+      // console.log("popupScroll");
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -401,6 +332,11 @@ export default {
         key: Date.now(),
       });
     },
+    async submitAction(){
+      // console.log(this.formData);
+     const result= await http.post(ADDCOURSE_API,this.formData);
+     this.$router.push({name:'course-list'})
+    }
   },
 };
 </script>
